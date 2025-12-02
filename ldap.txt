@@ -1,0 +1,23 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+spec:
+  identityProviders:
+    - ldap:
+        attributes:
+          email:
+            - userPrincipalName
+          id:
+            - distinguishedName
+          name:
+            - givenName
+          preferredUsername:
+            - sAMAccountName
+        bindDN: ocpdev
+        bindPassword:
+          name: ldap-bind-password-prz49
+        insecure: true
+        url: 'ldap://test.local:389/OU=Users,OU=Accounts,OU=Assets,DC=spsplan,DC=local?sAMAccountName?sub'
+      mappingMethod: claim
+      name: SPSPLAN
+      type: LDAP

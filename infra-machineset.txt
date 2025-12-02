@@ -1,0 +1,52 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/memoryMb: '32768'
+    machine.openshift.io/vCPU: '10'
+  name: ocpdev-pd2q5-infra-0
+  namespace: openshift-machine-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: ocpdev-pd2q5
+      machine.openshift.io/cluster-api-machineset: ocpdev-pd2q5-infra-0
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: ocpdev-pd2q5
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: ocpdev-pd2q5-infra-0
+    spec:
+      lifecycleHooks: {}
+      metadata:
+        labels:
+          node-role.kubernetes.io/infra: ''
+      providerSpec:
+        value:
+          numCoresPerSocket: 1
+          diskGiB: 100
+          snapshot: ''
+          userDataSecret:
+            name: worker-user-data
+          memoryMiB: 32768
+          credentialsSecret:
+            name: vsphere-cloud-credentials
+          network:
+            devices:
+              - networkName: TST-630
+          metadata:
+            creationTimestamp: null
+          numCPUs: 10
+          kind: VSphereMachineProviderSpec
+          workspace:
+            datacenter: PasdaranDC
+            datastore: /PasdaranDC/datastore/OCP/UnityOCP
+            folder: /PasdaranDC/vm/ocpdev
+            resourcePool: /PasdaranDC/host/NonBusiness//Resources
+            server: pasvc.spspmgmt.local
+          template: ocpdev-pd2q5-rhcos-generated-region-generated-zone
+          apiVersion: vsphereprovider.openshift.io/v1beta1
+

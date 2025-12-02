@@ -1,0 +1,104 @@
+additionalTrustBundle: |
+  -----BEGIN CERTIFICATE-----
+  MIIDyTCCArGgAwIBAgIUYEQzln2V2mcw+KN1Ckw+2S3Q4eMwDQYJKoZIhvcNAQEL
+  BQAwdDELMAkGA1UEBhMCSVIxDzANBgNVBAgMBlRFSFJBTjEPMA0GA1UEBwwGVEVI
+  UkFOMREwDwYDVQQKDAhTQURBRFBTUDEOMAwGA1UECwwFSU5GUkExIDAeBgNVBAMM
+  F3JlZy5vY3AwMS5zcHNwbGFuLmxvY2FsMB4XDTI1MDgxNjE0MTM0NVoXDTM1MDgx
+  NDE0MTM0NVowdDELMAkGA1UEBhMCSVIxDzANBgNVBAgMBlRFSFJBTjEPMA0GA1UE
+  BwwGVEVIUkFOMREwDwYDVQQKDAhTQURBRFBTUDEOMAwGA1UECwwFSU5GUkExIDAe
+  BgNVBAMMF3JlZy5vY3AwMS5zcHNwbGFuLmxvY2FsMIIBIjANBgkqhkiG9w0BAQEF
+  AAOCAQ8AMIIBCgKCAQEAlmZvvIb9w6z97CxU3pdMaI7HgrX5/OZuB5Y2AnILyuKx
+  BhLWcigts+L/sfdKLuYj+xGwVPlSOUuUv2Auu01DdyP4tTtOg+as8i2V/OypWRKi
+  8AeyzmJSS6J8eeOiZaUyMr9voGk9QK+AmXCABrbIY7IjbmvT82z2L3q2VipGH5iC
+  RHl7I3UydIPJIo6P6nqgdUFju0QiyRc7bZ+ag5T3mqSzoMy8X/ptfW0Vgxix+wm+
+  RmrS2iRSSQ1SyjpgGN201QL7KQVrIGDKsOhrKwkkJSZ1ZcsJgarANFs923BosEX6
+  3W0sCqrbwMydHoh0GRqeWyoFCL1v505MYyN8CQC4tQIDAQABo1MwUTAdBgNVHQ4E
+  FgQUrhKPdbeqKkmcOvBugCcG5b1pWOowHwYDVR0jBBgwFoAUrhKPdbeqKkmcOvBu
+  gCcG5b1pWOowDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAIooR
+  H1Nhc3UK/cd8rBGW+iH3Ijyv1ZB/kgU+gOjYSevPbxIAqdVpc7YR1L4uTNeLP/p2
+  bmTNWgSedbEjkYV5F/2AmWk9vMUsd9NVEA+YsSsrFQ4OtBUVTFT5dtchdw34TiTo
+  wXN82gm9M77ratAKUcrYB0saWj9ny2t25Ob9HFjREWs6E7WBb9WJ9i4nEHUMufhz
+  YGOSClDIZR2Y2DcyW335/zwusGOmEgWawQg2HjS9TBdrAL+8mYW74jxMeuwwKGSs
+  zY84/yf11wVuI0EH+5UTdWeCn4ILtBCAQObLu9C0vhG8obj/Rr/TN4YvxVbmzVh3
+  RtWIy4xEm6aoGyVx0w==
+  -----END CERTIFICATE-----
+#additionalTrustBundlePolicy: Proxyonly
+apiVersion: v1
+baseDomain: spsplan.local
+compute:
+- architecture: amd64
+  hyperthreading: Enabled
+  name: worker
+  platform:
+    vsphere:
+      coresPerSocket: 1
+      cpus: 6
+      memoryMB: 24576
+      osDisk:
+        diskSizeGB: 100
+      zones:
+      - generated-failure-domain
+  replicas: 1
+controlPlane:
+  architecture: amd64
+  hyperthreading: Enabled
+  name: master
+  platform:
+    vsphere:
+      coresPerSocket: 1
+      cpus: 6
+      memoryMB: 24576
+      osDisk:
+        diskSizeGB: 100
+      zones:
+      - generated-failure-domain
+  replicas: 3
+imageContentSources:
+- mirrors:
+  - reg.ocp01.spsplan.local:8443/dcinfra/ocp4.18.22/openshift/release
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+- mirrors:
+  - reg.ocp01.spsplan.local:8443/dcinfra/ocp4.18.22/openshift/release-images
+  source: quay.io/openshift-release-dev/ocp-release
+metadata:
+  creationTimestamp: null
+  name: infraocp2
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 24
+  machineNetwork:
+  - cidr: 172.24.37.0/24
+  networkType: OVNKubernetes
+  serviceNetwork:
+  - 10.12.0.0/16
+platform:
+  vsphere:
+    apiVIPs:
+    - 172.24.37.114
+    clusterOSImage: http://172.24.37.87:8080/rhcos-4.18.1-x86_64-vmware.x86_64.ova
+    failureDomains:
+    - name: generated-failure-domain
+      region: generated-region
+      server: test.vsphere.local
+      topology:
+        computeCluster: /testDC/host/NonBusiness
+        datacenter: testDC
+        datastore: /testDC/datastore/OCP/UnityOCP
+        folder: /testDC/vm/infraocp2
+        networks:
+        - TST-630
+        resourcePool: /testDC/host/NonBusiness//Resources
+      zone: generated-zone
+    ingressVIPs:
+    - 172.24.37.115
+    vcenters:
+    - datacenters:
+      - PasdaranDC
+      password: aA@@135792468
+      port: 443
+      server: test.vsphere.local
+      user: infra@test.vsphere.local
+publish: External
+pullSecret: '{ "auths":{"reg.ocp01.spsplan.local:8443":{"auth":"ZGNpbmZyYTppbmZyYUBQQHNzdzByZA=="}}}'
+sshKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyArCmJrPOJobnWb9L2OltdLL91swPj7t4AV6Fc8ljeKqxuiuidwIq1SXQ4GoHKHdZpreAuNyJJruLLphHzcdLWpRqeDnSOZtfzBt8kd3i++0sfod1U/O5oNtjPM44kKIeQJD/jvQcKJUIepWvttjukN/ixiSgCCVvmx2icvZPNQ1hEjGdvzR6YfImbcWnxNjOtANf2uoLHhD+G5mykLp351tIR7Lqcl58KojHtQUfNJ4KZuB6OPVbgi6KHiV6+VqhBvQ968zszSVAJfCLwkG/e/g74S+Gz69seOYk0v7IMfWZT8rslSvoO2wJiZiroCP3Gq437EtgNC80zjxxlQzFXCLh/W0RxvbEbVLJm8vnllsSi99A9ptr9/h0khnWN7ZbmM4/kaOioD7p8eY4FL/nGQr2Gk+akqCmx/Jrg/eTp8fR2YXg9GaUyqF/BBiPSs3dRY02HFubHWfjYbQlDn0g6nVWSsupd+A3sbeP8ZyVgmxdegQpGJLGX4yt/oPRdmc= emergency@bastion.ocp01.spsplan.local
